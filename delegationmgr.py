@@ -1,9 +1,14 @@
 import argparse
 import sys
+import json
+import logging
+import socket
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
+import google.cloud.logging
+
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.settings.sharing', 'https://www.googleapis.com/auth/gmail.settings.basic']
 
@@ -37,6 +42,17 @@ SERVICE_ACCOUNT_FILE = 'service_account_key.json'
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
+# setup logging to Google Cloud Logging
+# Instantiates a client
+client = google.cloud.logging.Client.from_service_account_json(SERVICE_ACCOUNT_FILE)
+
+# Retrieves a Cloud Logging handler based on the environment
+handler = client.get_default_handler()
+
+# Sets up basic logging
+logger = logging.getLogger("projects/gmaildelegation-455815/logs/python")
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 # different options for what we can be doing
 if args.create:
@@ -47,6 +63,8 @@ if args.create:
 
     # first setup delegated creds
     delegated_credentials = credentials.with_subject(args.on)
+
+    logger.info(f"New activity on {socket.gethostname()}: granting access to {args.create} for mailbox {args.on}")
 
     # have a bash and see what happens
     try:
@@ -73,6 +91,8 @@ elif args.delete:
 
     delegated_credentials = credentials.with_subject(args.on)
 
+    logger.info(f"New activity on {socket.gethostname()}: revoking access to {args.create} for mailbox {args.on}")
+
     try:
         service = build('gmail', 'v1', credentials=delegated_credentials)
 
@@ -89,6 +109,8 @@ elif args.list:
     # Requires
     # - args.list (the email address whose delegations you wish to view)
 
+    logger.info(f"New activity on {socket.gethostname()}: querying all delegations to {args.list}")
+    
     delegated_credentials = credentials.with_subject(args.list)
 
     try:
@@ -110,6 +132,8 @@ elif args.get:
 
     delegated_credentials = credentials.with_subject(args.on)
 
+    logger.info(f"New activity on {socket.gethostname()}: querying access to {args.create} for mailbox {args.on}")
+
     try:
         service = build('gmail', 'v1', credentials=delegated_credentials)
 
@@ -119,4 +143,6 @@ elif args.get:
         
 
     except HttpError as error:
+        if error.resp.status == 404:
+            print("404")
         print(f'An error occurred: {error}')
