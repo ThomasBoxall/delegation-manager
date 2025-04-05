@@ -28,7 +28,7 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 
 ## Usage
 ```
-python3 delegationmanager.py -h | -l EMAIL | -c EMAIL -o EMAIL | -d EMAIL -o EMAIL
+python3 delegationmanager.py -h | -l EMAIL | -g EMAIL -o EMAIL | -c EMAIL -o EMAIL | -d EMAIL -o EMAIL
 ```
 Yep, that's all the documentation you're getting. Go break some stuff :D
 
