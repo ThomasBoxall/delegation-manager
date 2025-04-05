@@ -39,6 +39,11 @@ if (args.create or args.delete or args.get) and not args.on:
 # Construct credentials to be used
 
 SERVICE_ACCOUNT_FILE = 'service_account_key.json'
+
+with open(SERVICE_ACCOUNT_FILE, 'r') as f:
+    service_account_info = json.load(f)
+    projectID = service_account_info.get('project_id')
+
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
@@ -50,7 +55,9 @@ client = google.cloud.logging.Client.from_service_account_json(SERVICE_ACCOUNT_F
 handler = client.get_default_handler()
 
 # Sets up basic logging
-logger = logging.getLogger("projects/gmaildelegation-455815/logs/python")
+
+logToWriteTo = "projects/" + projectID + "/logs/python"
+logger = logging.getLogger(logToWriteTo)
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 

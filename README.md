@@ -20,10 +20,11 @@ Requires:
 * googleapiclient.discovery
 * googleapiclient.errors
 * google.oauth2
+* google.cloud.logging
 
 Run the following to solve your problems
 ```
-pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib google-cloud-logging
 ```
 
 ## Usage
@@ -32,6 +33,7 @@ python3 delegationmanager.py -h | -l EMAIL | -g EMAIL -o EMAIL | -c EMAIL -o EMA
 ```
 Yep, that's all the documentation you're getting. Go break some stuff :D
 
+Script logs to the "python" log in the Google Cloud Project to keep tabs on what's going on. 
 
 ## Disclaimer
 If you run this script and it breaks your Google Workspace Tennant, not my problem. You run it at your own costs.
