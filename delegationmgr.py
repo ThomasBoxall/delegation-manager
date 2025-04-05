@@ -125,7 +125,14 @@ elif args.list:
 
         # Email address of how is getting permission to manage the inbox 
         request = service.users().settings().delegates().list(userId='me').execute()
-        print(request)
+
+        if request:
+            # there is a delegate there so we want to try to print nicely
+            print("Delegates:")
+            for i in range(0, len(request['delegates'])):
+                print(f"{request['delegates'][i]['delegateEmail']} {(request['delegates'][i]['verificationStatus'])}")
+        else:
+            print("No delegates")
         
 
     except HttpError as error:
@@ -146,8 +153,8 @@ elif args.get:
 
         # Email address of how is getting permission to manage the inbox 
         request = service.users().settings().delegates().get(userId='me', delegateEmail=args.get).execute()
-        print(request)
-        
+        print(request) 
+
 
     except HttpError as error:
         if error.resp.status == 404:
