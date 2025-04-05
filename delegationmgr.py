@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.settings.sharing']
+SCOPES = ['https://www.googleapis.com/auth/gmail.settings.sharing', 'https://www.googleapis.com/auth/gmail.settings.basic']
 
 parser = argparse.ArgumentParser(
     prog='delegationmgr',
